@@ -1,0 +1,32 @@
+x-deploy: &x-deploy
+  mode: global
+  placement:
+    constraints:
+    - node.role == manager
+  resources:
+    limits:
+      memory: 32M
+    reservations:
+      memory: 16M
+
+x-default-logging: &x-default-logging
+  options:
+    max-size: "12m"
+    max-file: "5"
+  driver: json-file
+
+  # ====================================================
+  # Node Labelling Agent
+  # https://github.com/swarmlibs/node-labelling-agent
+  # ====================================================
+
+services:
+  node_labelling_agent:
+    image: swarmlibs/node-labelling-agent:0.1.0-rc.1
+    volumes:
+    - type: bind
+      source: /var/run/docker.sock
+      target: /var/run/docker.sock
+      read_only: true
+    deploy: *x-deploy
+    logging: *x-default-logging
