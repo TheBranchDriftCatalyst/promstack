@@ -11,7 +11,8 @@ UNAME_S := $(shell uname -s)
 # if darwin == true, then use the cadvisor_docker_stack_darwin.yml file
 cadvisor_docker_stack_file := cadvisor/docker-stack.yml
 ifeq ($(UNAME_S),Darwin)
-	cadvisor_docker_stack_file := cadvisor/docker-stack-macos.yml
+	@echo "Using MACOS Version of docker"
+  cadvisor_docker_stack_file := cadvisor/docker-stack-macos.yml
   # echo "*****************************************************************"
   # echo "Darwin/Mac detected using macos cadvisor docker stack file"
   # echo "*****************************************************************"
