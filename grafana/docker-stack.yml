@@ -67,10 +67,10 @@ services:
         - grafana.svc.cluster.local
       grafana:
         aliases:
-          - grafana.local
+        - grafana.local
       prometheus:
         aliases:
-          - grafana.svc.cluster.local
+        - grafana.svc.cluster.local
       prometheus_gwnetwork:
     volumes:
     - type: volume
@@ -285,7 +285,7 @@ configs:
   # Grafana datasources provisioning config
   gf-provisioning-datasource-prometheus:
     name: gf-provisioning-datasource-prometheus-v1
-    file: ./provisioning/datasources/prometheus.yaml
+    file: ./provisioning/datasources/prometheus.yml
     labels:
     - "io.grafana.provisioning.datasource=true"
 

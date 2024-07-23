@@ -34,7 +34,7 @@ services:
   prometheus-server:
     image: prom/prometheus:v2.45.6
     command:
-    - --config.file=/prometheus-configs.d/prometheus.yaml
+    - --config.file=/prometheus-configs.d/prometheus.yml
     - --storage.tsdb.path=/prometheus
     - --web.console.libraries=/usr/share/prometheus/console_libraries
     - --web.console.templates=/usr/share/prometheus/consoles
@@ -87,7 +87,7 @@ services:
     - "host.docker.internal:host-gateway"
     configs:
     - source: prometheus-prometheus
-      target: /etc/prometheus/scrape-configs/prometheus.yaml
+      target: /etc/prometheus/scrape-configs/prometheus.yml
     volumes:
     - type: bind
       source: /var/run/docker.sock
@@ -106,8 +106,8 @@ services:
     image: swarmlibs/genconfig:0.1.0-rc.1
     command:
     - --verbose
-    - --file=/run/configs/prometheus.yaml.tmpl
-    - --out=/prometheus-configs.d/prometheus.yaml
+    - --file=/run/configs/prometheus.yml.tmpl
+    - --out=/prometheus-configs.d/prometheus.yml
     environment:
     - PROMETHEUS_CLUSTER_NAME=${PROMETHEUS_CLUSTER_NAME:-{{ index .Service.Labels "com.docker.stack.namespace"}}}
     - PROMETHEUS_CLUSTER_REPLICA=${PROMETHEUS_CLUSTER_REPLICA:-replica-{{.Task.Slot}}}
@@ -116,8 +116,8 @@ services:
       resources: *x-exporter-resources-constraints
     logging: *x-default-logging
     configs:
-    - source: prometheus.yaml.tmpl
-      target: /run/configs/prometheus.yaml.tmpl
+    - source: prometheus.yml.tmpl
+      target: /run/configs/prometheus.yml.tmpl
     volumes:
     - type: volume
       source: prometheus-configs
@@ -169,7 +169,7 @@ services:
     image: quay.io/prometheus-operator/prometheus-config-reloader:v0.74.0
     command:
     - --listen-address=:8080
-    - --config-file=/prometheus-configs.d/prometheus.yaml
+    - --config-file=/prometheus-configs.d/prometheus.yml
     - --watched-dir=/prometheus-configs.d/scrape-configs
     - --reload-url=http://prometheus.internal:9090/-/reload
     - --runtimeinfo-url=http://prometheus.internal:9090/api/v1/status/runtimeinfo
@@ -231,37 +231,37 @@ networks:
 
 configs:
   # Prometheus config files
-  prometheus.yaml.tmpl:
-    name: prometheus.yaml.tmpl-v1
-    file: ./configs/prometheus.yaml.tmpl
+  prometheus.yml.tmpl:
+    name: prometheus.yml.tmpl-v1
+    file: ./configs/prometheus.yml.tmpl
   prometheus-prometheus:
     name: prometheus-prometheus-v1
-    file: ./configs/scrape-configs/prometheus.yaml
+    file: ./configs/scrape-configs/prometheus.yml
     template_driver: golang
 
   # Prometheus's scrape config files
   prometheus-dockerswarm-nodes:
     name: prometheus-dockerswarm-nodes-v1
-    file: ./configs/scrape-configs/dockerswarm-nodes.yaml
+    file: ./configs/scrape-configs/dockerswarm-nodes.yml
     labels:
     - "io.prometheus.scrape_config=true"
   prometheus-dockerswarm-services-endpoints-host:
     name: prometheus-dockerswarm-services-endpoints-host-v1
-    file: ./configs/scrape-configs/dockerswarm-services-endpoints-host.yaml
+    file: ./configs/scrape-configs/dockerswarm-services-endpoints-host.yml
     labels:
     - "io.prometheus.scrape_config=true"
   prometheus-dockerswarm-services-endpoints-ingress:
     name: prometheus-dockerswarm-services-endpoints-ingress-v1
-    file: ./configs/scrape-configs/dockerswarm-services-endpoints-ingress.yaml
+    file: ./configs/scrape-configs/dockerswarm-services-endpoints-ingress.yml
     labels:
     - "io.prometheus.scrape_config=true"
   prometheus-dockerswarm-tasks:
     name: prometheus-dockerswarm-tasks-v1
-    file: ./configs/scrape-configs/dockerswarm-tasks.yaml
+    file: ./configs/scrape-configs/dockerswarm-tasks.yml
     labels:
     - "io.prometheus.scrape_config=true"
   prometheus-windows-exporter-tasks:
     name: prometheus-windows-exporter-tasks-v1
-    file: ./configs/scrape-configs/windows-exporter.yaml
+    file: ./configs/scrape-configs/windows-exporter.yml
     labels:
     - "io.prometheus.scrape_config=true"

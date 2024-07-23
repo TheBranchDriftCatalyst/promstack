@@ -227,7 +227,7 @@ configs:
   # Grafana datasources provisioning config
   gf-provisioning-datasource-prometheus:
     name: gf-provisioning-datasource-prometheus-v1
-    file: ./provisioning/datasources/prometheus.yaml
+    file: ./provisioning/datasources/prometheus.yml
     labels:
       - "io.grafana.provisioning.datasource=true"
 ```

@@ -412,36 +412,14 @@ services:
       source: /
       target: /rootfs
       read_only: true
-  node_labelling_agent:
-    deploy:
-      mode: global
-      resources:
-        limits:
-          memory: "33554432"
-        reservations:
-          memory: "16777216"
-      placement:
-        constraints:
-        - node.role == manager
-    image: swarmlibs/node-labelling-agent:0.1.0-rc.1
-    logging:
-      driver: json-file
-      options:
-        max-file: "5"
-        max-size: 12m
-    volumes:
-    - type: bind
-      source: /var/run/docker.sock
-      target: /var/run/docker.sock
-      read_only: true
   prometheus:
     command:
     - --verbose
-    - --file=/run/configs/prometheus.yaml.tmpl
-    - --out=/prometheus-configs.d/prometheus.yaml
+    - --file=/run/configs/prometheus.yml.tmpl
+    - --out=/prometheus-configs.d/prometheus.yml
     configs:
-    - source: prometheus.yaml.tmpl
-      target: /run/configs/prometheus.yaml.tmpl
+    - source: prometheus.yml.tmpl
+      target: /run/configs/prometheus.yml.tmpl
     deploy:
       mode: global
       resources:
@@ -514,7 +492,7 @@ services:
   prometheus-config-reloader:
     command:
     - --listen-address=:8080
-    - --config-file=/prometheus-configs.d/prometheus.yaml
+    - --config-file=/prometheus-configs.d/prometheus.yml
     - --watched-dir=/prometheus-configs.d/scrape-configs
     - --reload-url=http://prometheus.internal:9090/-/reload
     - --runtimeinfo-url=http://prometheus.internal:9090/api/v1/status/runtimeinfo
@@ -567,7 +545,7 @@ services:
       target: /prometheus-configs.d
   prometheus-server:
     command:
-    - --config.file=/prometheus-configs.d/prometheus.yaml
+    - --config.file=/prometheus-configs.d/prometheus.yml
     - --storage.tsdb.path=/prometheus
     - --web.console.libraries=/usr/share/prometheus/console_libraries
     - --web.console.templates=/usr/share/prometheus/consoles
@@ -575,7 +553,7 @@ services:
     - --log.level=info
     configs:
     - source: prometheus-prometheus
-      target: /etc/prometheus/scrape-configs/prometheus.yaml
+      target: /etc/prometheus/scrape-configs/prometheus.yml
     depends_on:
     - prometheus
     deploy:
@@ -712,112 +690,112 @@ volumes:
 configs:
   gf-dashboard-cadvisor:
     name: gf-dashboard-cadvisor-v1
-    file: grafana/dashboards/cadvisor.json
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/grafana/dashboards/cadvisor.json
     labels:
       io.grafana.dashboard: "true"
   gf-dashboard-dockerswarm-nodes-dashboard:
     name: gf-dashboard-dockerswarm-nodes-dashboard-v1
-    file: grafana/dashboards/dockerswarm-nodes.json
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/grafana/dashboards/dockerswarm-nodes.json
     labels:
       io.grafana.dashboard: "true"
   gf-dashboard-dockerswarm-services:
     name: gf-dashboard-dockerswarm-services-v1
-    file: grafana/dashboards/dockerswarm-services.json
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/grafana/dashboards/dockerswarm-services.json
     labels:
       io.grafana.dashboard: "true"
   gf-dashboard-dockerswarm-services-endpoints:
     name: gf-dashboard-dockerswarm-services-endpoints-v1
-    file: grafana/dashboards/dockerswarm-services-endpoints.json
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/grafana/dashboards/dockerswarm-services-endpoints.json
     labels:
       io.grafana.dashboard: "true"
   gf-dashboard-grafana-metrics:
     name: gf-dashboard-grafana-metrics-v1
-    file: grafana/dashboards/grafana-metrics.json
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/grafana/dashboards/grafana-metrics.json
     labels:
       io.grafana.dashboard: "true"
   gf-dashboard-node-exporter:
     name: gf-dashboard-node-exporter-v1
-    file: grafana/dashboards/node-exporter.json
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/grafana/dashboards/node-exporter.json
     labels:
       io.grafana.dashboard: "true"
   gf-dashboard-prometheus-stats:
     name: gf-dashboard-prometheus-stats-v1
-    file: grafana/dashboards/prometheus-stats.json
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/grafana/dashboards/prometheus-stats.json
     labels:
       io.grafana.dashboard: "true"
   gf-dashboard-prometheus-stats-v2:
     name: gf-dashboard-prometheus-stats-v2
-    file: grafana/dashboards/prometheus-2-0-stats.json
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/grafana/dashboards/prometheus-2-0-stats.json
     labels:
       io.grafana.dashboard: "true"
   gf-provisioning-dashboards:
     name: gf-provisioning-dashboards-v1
-    file: grafana/provisioning/dashboards/grafana-dashboards.yml
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/grafana/provisioning/dashboards/grafana-dashboards.yml
     labels:
       io.grafana.provisioning.dashboard: "true"
   gf-provisioning-datasource-prometheus:
     name: gf-provisioning-datasource-prometheus-v1
-    file: grafana/provisioning/datasources/prometheus.yaml
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/grafana/provisioning/datasources/prometheus.yml
     labels:
       io.grafana.provisioning.datasource: "true"
   node-exporter-node-meta:
     name: node-exporter-node-meta-v1
-    file: node-exporter/node_meta.prom
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/node-exporter/node_meta.prom
   prometheus:
     name: prometheus
     external: true
   prometheus-blackbox-exporter:
     name: prometheus-blackbox-exporter-v1
-    file: blackbox-exporter/prometheus/blackbox-exporter.yml
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/blackbox-exporter/prometheus/blackbox-exporter.yml
     labels:
       io.prometheus.scrape_config: "true"
   prometheus-cadvisor:
     name: prometheus-cadvisor-v1
-    file: cadvisor/prometheus/cadvisor.yml
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/cadvisor/prometheus/cadvisor.yml
     labels:
       io.prometheus.scrape_config: "true"
   prometheus-dockerswarm-nodes:
     name: prometheus-dockerswarm-nodes-v1
-    file: prometheus/configs/scrape-configs/dockerswarm-nodes.yaml
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/prometheus/configs/scrape-configs/dockerswarm-nodes.yml
     labels:
       io.prometheus.scrape_config: "true"
   prometheus-dockerswarm-services-endpoints-host:
     name: prometheus-dockerswarm-services-endpoints-host-v1
-    file: prometheus/configs/scrape-configs/dockerswarm-services-endpoints-host.yaml
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/prometheus/configs/scrape-configs/dockerswarm-services-endpoints-host.yml
     labels:
       io.prometheus.scrape_config: "true"
   prometheus-dockerswarm-services-endpoints-ingress:
     name: prometheus-dockerswarm-services-endpoints-ingress-v1
-    file: prometheus/configs/scrape-configs/dockerswarm-services-endpoints-ingress.yaml
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/prometheus/configs/scrape-configs/dockerswarm-services-endpoints-ingress.yml
     labels:
       io.prometheus.scrape_config: "true"
   prometheus-dockerswarm-tasks:
     name: prometheus-dockerswarm-tasks-v1
-    file: prometheus/configs/scrape-configs/dockerswarm-tasks.yaml
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/prometheus/configs/scrape-configs/dockerswarm-tasks.yml
     labels:
       io.prometheus.scrape_config: "true"
   prometheus-node-exporter:
     name: prometheus-node-exporter-v1
-    file: node-exporter/prometheus/node_exporter.yml
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/node-exporter/prometheus/node_exporter.yml
     labels:
       io.prometheus.scrape_config: "true"
   prometheus-prometheus:
     name: prometheus-prometheus-v1
-    file: prometheus/configs/scrape-configs/prometheus.yaml
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/prometheus/configs/scrape-configs/prometheus.yml
     template_driver: golang
   prometheus-pushgateway:
     name: prometheus-pushgateway-v1
-    file: pushgateway/prometheus/pushgateway.yml
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/pushgateway/prometheus/pushgateway.yml
     labels:
       io.prometheus.scrape_config: "true"
   prometheus-windows-exporter-tasks:
     name: prometheus-windows-exporter-tasks-v1
-    file: prometheus/configs/scrape-configs/windows-exporter.yaml
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/prometheus/configs/scrape-configs/windows-exporter.yml
     labels:
       io.prometheus.scrape_config: "true"
-  prometheus.yaml.tmpl:
-    name: prometheus.yaml.tmpl-v1
-    file: prometheus/configs/prometheus.yaml.tmpl
+  prometheus.yml.tmpl:
+    name: prometheus.yml.tmpl-v1
+    file: /Users/panda/Code/active_workspace/workspaces/drogon/stacks/@promstack/prometheus/configs/prometheus.yml.tmpl
 x-default-logging:
   driver: json-file
   options:

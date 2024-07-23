@@ -1,16 +1,11 @@
 DOCKER_STACK_CONFIG := docker stack config
 DOCKER_STACK_CONFIG_ARGS := --skip-interpolation
 
-UNAME_S := $(shell uname -s)
-# macos := false
-
-# ifeq ($(UNAME_S),Darwin)
-#   macos := true
-# endif
+UNAME_S := $(shell uname -s | tr '[:upper:]' '[:lower:]')
 
 # if darwin == true, then use the cadvisor_docker_stack_darwin.yml file
 cadvisor_docker_stack_file := cadvisor/docker-stack.yml
-ifeq ($(UNAME_S),Darwin)
+ifeq ($(UNAME_S),darwin)
 	@echo "Using MACOS Version of docker"
   cadvisor_docker_stack_file := cadvisor/docker-stack-macos.yml
   # echo "*****************************************************************"
@@ -28,7 +23,7 @@ create-manifest:
 	@mkdir -p _tmp
 	$(DOCKER_STACK_CONFIG) $(DOCKER_STACK_CONFIG_ARGS) -c labeling-agent/docker-stack.yml > _tmp/labeling-agent.manifest.yml
 	$(DOCKER_STACK_CONFIG) $(DOCKER_STACK_CONFIG_ARGS) -c blackbox-exporter/docker-stack.yml > _tmp/blackbox-exporter.manifest.yml
-	$(DOCKER_STACK_CONFIG) $(DOCKER_STACK_CONFIG_ARGS) -c $(cadvisor_docker_stack_file) > _tmp/cadvisor.manifest.yml
+	$(DOCKER_STACK_CONFIG) $(DOCKER_STACK_CONFIG_ARGS) -c cadvisor.{{ .UNAME_S }} > _tmp/cadvisor.manifest.yml
 	$(DOCKER_STACK_CONFIG) $(DOCKER_STACK_CONFIG_ARGS) -c grafana/docker-stack.yml > _tmp/grafana.manifest.yml
 	$(DOCKER_STACK_CONFIG) $(DOCKER_STACK_CONFIG_ARGS) -c node-exporter/docker-stack.yml > _tmp/node-exporter.manifest.yml
 	$(DOCKER_STACK_CONFIG) $(DOCKER_STACK_CONFIG_ARGS) -c prometheus/docker-stack.yml > _tmp/prometheus.manifest.yml
