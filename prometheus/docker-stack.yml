@@ -47,6 +47,10 @@ services:
         io.prometheus.role: "prometheus"
         io.prometheus.dockerswarm-tasks.should_be_scraped: "false"
         io.prometheus.dockerswarm-services.should_be_probed: "false"
+        traefik.enable: "true"
+        traefik.http.routers.prometheus-insecure.entrypoints: web
+        traefik.http.routers.prometheus-insecure.rule: Host(`prometheus.$INTERNAL_HOST`)
+        traefik.http.services.prometheus.loadbalancer.server.port: "9090"
       restart_policy:
         condition: any
         max_attempts: 15
@@ -65,15 +69,15 @@ services:
         monitor: 15s
         max_failure_ratio: 0.1
     logging: *x-default-logging
-    ports:
-    - published: 9090
-      target: 9090
-      mode: host
+    # ports:
+    # - published: 9090
+    #   target: 9090
+    #   mode: host
     hostname: replica-{{.Task.Slot}}.prometheus.local
     networks:
       public:
-        aliases:
-        - prometheus.svc.cluster.local
+      # aliases:
+      # - prometheus.svc.cluster.local
       prometheus:
         aliases:
         - prometheus.local

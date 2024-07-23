@@ -27,6 +27,10 @@ services:
         io.prometheus.role: "cadvisor"
         io.prometheus.dockerswarm-tasks.should_be_scraped: "false"
         io.prometheus.dockerswarm-services.should_be_probed: "false"
+        traefik.enable: "true"
+        traefik.http.routers.cadvisor-insecure.entrypoints: web
+        traefik.http.routers.cadvisor-insecure.rule: Host(`cadvisor.$INTERNAL_HOST`)
+        traefik.http.services.cadvisor.loadbalancer.server.port: "8080"
       restart_policy:
         condition: any
         max_attempts: 15
@@ -53,40 +57,41 @@ services:
     networks:
       prometheus_gwnetwork:
         aliases:
-          - cadvisor.local
+        - cadvisor.local
+      public:
     configs:
-      - source: prometheus-cadvisor
+    - source: prometheus-cadvisor
     volumes:
-      - type: bind
-        source: /
-        target: /rootfs
-        read_only: true
-      - type: bind
-        source: /var/run
-        target: /var/run
-        read_only: true
-      - type: bind
-        source: /sys
-        target: /sys
-        read_only: true
-      - type: bind
-        source: /var/lib/docker
-        target: /var/lib/docker
-        read_only: true
-      - type: bind
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
-        read_only: true
-      # If you are running Docker Desktop on macOS,
-      # You'll need to comment out the following bind mounts
-      - type: bind
-        source: /dev/disk
-        target: /dev/disk
-        read_only: true
-      - type: bind
-        source: /dev/kmsg
-        target: /dev/kmsg
-        read_only: true
+    - type: bind
+      source: /
+      target: /rootfs
+      read_only: true
+    - type: bind
+      source: /var/run
+      target: /var/run
+      read_only: true
+    - type: bind
+      source: /sys
+      target: /sys
+      read_only: true
+    - type: bind
+      source: /var/lib/docker
+      target: /var/lib/docker
+      read_only: true
+    - type: bind
+      source: /var/run/docker.sock
+      target: /var/run/docker.sock
+      read_only: true
+    # If you are running Docker Desktop on macOS,
+    # You'll need to comment out the following bind mounts
+    - type: bind
+      source: /dev/disk
+      target: /dev/disk
+      read_only: true
+    - type: bind
+      source: /dev/kmsg
+      target: /dev/kmsg
+      read_only: true
 
 networks:
   prometheus_gwnetwork:
@@ -98,4 +103,4 @@ configs:
     name: prometheus-cadvisor-v1
     file: ./prometheus/cadvisor.yml
     labels:
-      - "io.prometheus.scrape_config=true"
+    - "io.prometheus.scrape_config=true"

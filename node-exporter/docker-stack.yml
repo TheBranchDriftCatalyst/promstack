@@ -20,10 +20,10 @@ services:
   node-exporter:
     image: prom/node-exporter:v1.8.1
     command:
-      - --path.rootfs=/rootfs
-      - --collector.textfile.directory=/etc/node-exporter
-      - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
-      - --no-collector.ipvs
+    - --path.rootfs=/rootfs
+    - --collector.textfile.directory=/etc/node-exporter
+    - --collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)
+    - --no-collector.ipvs
     deploy:
       mode: global
       resources: *x-exporter-resources-constraints
@@ -31,6 +31,10 @@ services:
         io.prometheus.role: "node-exporter"
         io.prometheus.dockerswarm-tasks.should_be_scraped: "false"
         io.prometheus.dockerswarm-services.should_be_probed: "false"
+        traefik.enable: "true"
+        traefik.http.routers.node-exporter-insecure.entrypoints: web
+        traefik.http.routers.node-exporter-insecure.rule: Host(`node-exporter.$INTERNAL_HOST`)
+        traefik.http.services.node-exporter.loadbalancer.server.port: "9100"
       restart_policy:
         condition: any
         max_attempts: 15
@@ -55,18 +59,19 @@ services:
     #     target: 9100
     #     mode: host
     networks:
+      public:
       prometheus_gwnetwork:
         aliases:
-          - node-exporter.local
+        - node-exporter.local
     configs:
-      - source: node-exporter-node-meta
-        target: /etc/node-exporter/node_meta.prom
-      - source: prometheus-node-exporter
+    - source: node-exporter-node-meta
+      target: /etc/node-exporter/node_meta.prom
+    - source: prometheus-node-exporter
     volumes:
-      - type: bind
-        source: /
-        target: /rootfs
-        read_only: true
+    - type: bind
+      source: /
+      target: /rootfs
+      read_only: true
 
 configs:
   # Node exporter textfile collector
@@ -79,9 +84,12 @@ configs:
     name: prometheus-node-exporter-v1
     file: ./prometheus/node_exporter.yml
     labels:
-      - "io.prometheus.scrape_config=true"
+    - "io.prometheus.scrape_config=true"
 
 networks:
   prometheus_gwnetwork:
     name: prometheus_gwnetwork
+    external: true
+  public:
+    name: public
     external: true

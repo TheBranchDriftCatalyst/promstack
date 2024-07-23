@@ -39,6 +39,12 @@ services:
         io.prometheus.enabled: "true"
         io.prometheus.job_name: "grafana"
         io.prometheus.scrape_port: "3000"
+        # Traefik Service
+        traefik.enable: "true"
+        traefik.http.services.grafana.loadbalancer.server.port: "3000"
+        # Traefik Internal Route
+        traefik.http.routers.grafana-insecure.rule: "Host(`grafana.$INTERNAL_HOST`)"
+        traefik.http.routers.grafana-insecure.entrypoints: "web"
       restart_policy:
         condition: any
         max_attempts: 15
@@ -57,14 +63,14 @@ services:
         monitor: 15s
         max_failure_ratio: 0.1
     logging: *x-default-logging
-    ports:
-    - published: 3000
-      target: 3000
+    # ports:
+    # - published: 3000
+    #   target: 3000
     hostname: replica-{{.Task.Slot}}.grafana.local
     networks:
       public:
-        aliases:
-        - grafana.svc.cluster.local
+      # aliases:
+      # - grafana.svc.cluster.local
       grafana:
         aliases:
         - grafana.local

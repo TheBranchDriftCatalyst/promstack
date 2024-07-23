@@ -50,12 +50,12 @@ services:
     networks:
       prometheus:
         aliases:
-          - pushgateway.svc.cluster.local
+        - pushgateway.svc.cluster.local
       prometheus_gwnetwork:
         aliases:
-          - pushgateway.local
+        - pushgateway.local
     configs:
-      - source: prometheus-pushgateway
+    - source: prometheus-pushgateway
 
 configs:
   prometheus:
@@ -65,7 +65,7 @@ configs:
     name: prometheus-pushgateway-v1
     file: ./prometheus/pushgateway.yml
     labels:
-      - "io.prometheus.scrape_config=true"
+    - "io.prometheus.scrape_config=true"
 
 networks:
   prometheus_gwnetwork:

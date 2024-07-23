@@ -54,6 +54,10 @@ services:
         io.prometheus.dockerswarm-services.should_be_probed: "false"
         io.prometheus.dockerswarm-tasks.should_be_scraped: "false"
         io.prometheus.role: cadvisor
+        traefik.enable: "true"
+        traefik.http.routers.cadvisor-insecure.entrypoints: web
+        traefik.http.routers.cadvisor-insecure.rule: Host(`cadvisor.$INTERNAL_HOST`)
+        traefik.http.services.cadvisor.loadbalancer.server.port: "8080"
       update_config:
         parallelism: 1
         delay: 30s
@@ -85,6 +89,7 @@ services:
       prometheus_gwnetwork:
         aliases:
         - cadvisor.local
+      public: null
     volumes:
     - type: bind
       source: /
@@ -113,6 +118,10 @@ services:
         io.prometheus.enabled: "true"
         io.prometheus.job_name: grafana
         io.prometheus.scrape_port: "3000"
+        traefik.enable: "true"
+        traefik.http.routers.grafana-insecure.entrypoints: web
+        traefik.http.routers.grafana-insecure.rule: Host(`grafana.$INTERNAL_HOST`)
+        traefik.http.services.grafana.loadbalancer.server.port: "3000"
       update_config:
         parallelism: 1
         delay: 30s
@@ -149,12 +158,7 @@ services:
         aliases:
         - grafana.svc.cluster.local
       prometheus_gwnetwork: null
-      public:
-        aliases:
-        - grafana.svc.cluster.local
-    ports:
-    - target: 3000
-      published: 3000
+      public: null
     volumes:
     - type: volume
       source: grafana-data
@@ -376,6 +380,10 @@ services:
         io.prometheus.dockerswarm-services.should_be_probed: "false"
         io.prometheus.dockerswarm-tasks.should_be_scraped: "false"
         io.prometheus.role: node-exporter
+        traefik.enable: "true"
+        traefik.http.routers.node-exporter-insecure.entrypoints: web
+        traefik.http.routers.node-exporter-insecure.rule: Host(`node-exporter.$INTERNAL_HOST`)
+        traefik.http.services.node-exporter.loadbalancer.server.port: "9100"
       update_config:
         parallelism: 1
         delay: 30s
@@ -407,6 +415,7 @@ services:
       prometheus_gwnetwork:
         aliases:
         - node-exporter.local
+      public: null
     volumes:
     - type: bind
       source: /
@@ -562,6 +571,10 @@ services:
         io.prometheus.dockerswarm-services.should_be_probed: "false"
         io.prometheus.dockerswarm-tasks.should_be_scraped: "false"
         io.prometheus.role: prometheus
+        traefik.enable: "true"
+        traefik.http.routers.prometheus-insecure.entrypoints: web
+        traefik.http.routers.prometheus-insecure.rule: Host(`prometheus.$INTERNAL_HOST`)
+        traefik.http.services.prometheus.loadbalancer.server.port: "9090"
       update_config:
         parallelism: 1
         delay: 30s
@@ -602,13 +615,7 @@ services:
       prometheus_internal:
         aliases:
         - prometheus.internal
-      public:
-        aliases:
-        - prometheus.svc.cluster.local
-    ports:
-    - mode: host
-      target: 9090
-      published: 9090
+      public: null
     user: "0:0"
     volumes:
     - type: bind
