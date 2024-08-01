@@ -1,0 +1,17 @@
+groups:
+- name: power_consumption_cost
+  rules:
+  - record: consumption_rate
+    expr: rate(current_consumption[1m])
+  - record: consumption_cost
+    expr: |
+      sum by(device_id, alias, model) (
+        consumption_rate *
+        (
+          case
+            when hour() >= 9 and hour() < 17 then 0.20
+            when hour() >= 0 and hour() < 7 or hour() >= 22 and hour() < 24 then 0.10
+            else 0.15
+          end
+        ) * 3600
+      )

@@ -1,4 +1,4 @@
-version: "3.12"
+version: "3.13"
 services:
   blackbox-exporter:
     configs:
@@ -209,6 +209,8 @@ services:
         max_attempts: 15
         window: 10s
       placement:
+        constraints:
+        - node.labels.services.promstack_grafana == true
         max_replicas_per_node: 1
     image: swarmlibs/prometheus-config-provider:0.1.0-rc.1
     logging:
@@ -253,6 +255,8 @@ services:
         max_attempts: 15
         window: 10s
       placement:
+        constraints:
+        - node.labels.services.promstack_grafana == true
         max_replicas_per_node: 1
     environment:
       GF_PATHS_PROVISIONING: /etc/grafana/provisioning
@@ -305,6 +309,8 @@ services:
         max_attempts: 15
         window: 10s
       placement:
+        constraints:
+        - node.labels.services.promstack_grafana == true
         max_replicas_per_node: 1
     image: swarmlibs/prometheus-config-provider:0.1.0-rc.1
     logging:
@@ -349,6 +355,8 @@ services:
         max_attempts: 15
         window: 10s
       placement:
+        constraints:
+        - node.labels.services.promstack_grafana == true
         max_replicas_per_node: 1
     image: swarmlibs/prometheus-config-provider:0.1.0-rc.1
     logging:

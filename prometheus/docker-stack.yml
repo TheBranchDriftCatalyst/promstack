@@ -93,6 +93,11 @@ services:
     - source: prometheus-prometheus
       target: /etc/prometheus/scrape-configs/prometheus.yml
     volumes:
+    # - "./rules/rules.yml:/etc/prom-rules/rules.yml"
+    # - type: volume
+    #   source: prometheus-rules
+    #   target: /etc/prometheus/rules
+    #   # read_only: true
     - type: bind
       source: /var/run/docker.sock
       target: /var/run/docker.sock
@@ -219,6 +224,12 @@ services:
 volumes:
   prometheus:
   prometheus-configs:
+  # prometheus-rules:
+  #   driver: local
+  #   driver_opts:
+  #     type: none
+  #     device: "./rules"
+  #     o: bind,rw
 
 networks:
   public: # The 3rd-party ingress network

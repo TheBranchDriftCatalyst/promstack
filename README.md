@@ -9,6 +9,7 @@ A Docker Stack deployment for the monitoring suite for Docker Swarm includes (Gr
 > But feel free to test it and provide feedback.
 
 **Table of Contents**:
+
 - [About](#about)
 - [Concepts](#concepts)
   - [Prometheus](#prometheus)
@@ -27,7 +28,6 @@ A Docker Stack deployment for the monitoring suite for Docker Swarm includes (Gr
     - [Register a custom scrape config](#register-a-custom-scrape-config)
   - [Configure Prometheus](#configure-prometheus)
     - [Environment variables](#environment-variables)
-
 
 ## Concepts
 
@@ -54,8 +54,8 @@ Here is a list of Docker Service/Task labels that are mapped to Kubernetes label
 | `pod`        | `dockerswarm_task_name`                                       | `dockerswarm/tasks`              |
 | `service`    | `__meta_dockerswarm_service_name`                             | `dockerswarm/services-endpoints` |
 
-* The **dockerswarm_task_name** is a combination of the service name, slot and task id.
-* The task id is a unique identifier for the task. It depends on the mode of the deployement (replicated or global). If the service is replicated, the task id is the slot number. If the service is global, the task id is the node id.
+- The **dockerswarm_task_name** is a combination of the service name, slot and task id.
+- The task id is a unique identifier for the task. It depends on the mode of the deployement (replicated or global). If the service is replicated, the task id is the slot number. If the service is global, the task id is the node id.
 
 ### Configuration providers and config reloader services
 
@@ -70,6 +70,7 @@ Here an example visual representation of the services:
 </picture>
 
 We leverage the below services:
+
 - [swarmlibs/prometheus-config-provider](https://github.com/swarmlibs/prometheus-config-provider)
 - [swarmlibs/grafana-provisioning-config-reloader](https://github.com/swarmlibs/grafana-provisioning-config-reloader)
 - [prometheus-operator/prometheus-config-reloader](https://github.com/prometheus-operator/prometheus-operator/tree/main/cmd/prometheus-config-reloader)
@@ -80,12 +81,12 @@ We leverage the below services:
 
 These are the services that are part of the stack:
 
-- Blackbox exporter: https://github.com/prometheus/blackbox_exporter
-- cAdvisor: https://github.com/google/cadvisor
-- Grafana: https://github.com/grafana/grafana
-- Node exporter: https://github.com/prometheus/node_exporter
-- Prometheus: https://github.com/prometheus/prometheus
-- Pushgateway: https://github.com/prometheus/pushgateway
+- Blackbox exporter: <https://github.com/prometheus/blackbox_exporter>
+- cAdvisor: <https://github.com/google/cadvisor>
+- Grafana: <https://github.com/grafana/grafana>
+- Node exporter: <https://github.com/prometheus/node_exporter>
+- Prometheus: <https://github.com/prometheus/prometheus>
+- Pushgateway: <https://github.com/prometheus/pushgateway>
 
 ## Pre-requisites
 
@@ -123,13 +124,13 @@ docker network create --scope=swarm --driver=overlay --attachable prometheus
 docker network create --scope=swarm --driver=overlay --attachable prometheus_gwnetwork
 ```
 
-* The `public` network is used as 3rd-party ingress.
-* The `prometheus` network is used to perform service discovery for Prometheus scrape configs.
-* The `prometheus_gwnetwork` network is used for the internal communication between the Prometheus Server, exporters and other agents.
+- The `public` network is used as 3rd-party ingress.
+- The `prometheus` network is used to perform service discovery for Prometheus scrape configs.
+- The `prometheus_gwnetwork` network is used for the internal communication between the Prometheus Server, exporters and other agents.
 
 The `grafana` and `prometheus` service requires extra services to operate, mainly for providing configuration files. There are two type of child services, a config provider and config reloader service. In order to ensure placement of these services, you need to deploy the `swarmlibs` stack.
 
-See https://github.com/swarmlibs/swarmlibs for more information.
+See <https://github.com/swarmlibs/swarmlibs> for more information.
 
 ### Deploy stack
 
@@ -184,12 +185,12 @@ watch docker service ls --filter label=com.docker.stack.namespace=promstack
 
 ---
 
-
 ## Grafana
 
 The Grafana service is configured with config provider and config reload services. The config provider service is responsible for providing the configuration files for the Grafana service. The config reloader service is responsible for reloading the Grafana service configuration when the config provider service updates the configuration files.
 
 The following configuration are supported:
+
 - Grafana Dashboards
 - Provisioning (Datasources, Dashboards)
 
@@ -212,6 +213,7 @@ configs:
 To inject a Grafana Provisioning configurations, you need to specify config object in your `docker-compose.yml` or `docker-stack.yml` file as shown below.
 
 There are two types of provisioning configurations:
+
 - Dashboards: Use `io.grafana.provisioning.dashboard=true` label to inject the provisioning configuration for dashboards.
 - Datasources: Use `io.grafana.provisioning.datasource=true` label to inject the provisioning configuration for data sources.
 
@@ -295,6 +297,7 @@ docker service update --env-add PROMETHEUS_SCRAPE_INTERVAL=15s promstack_prometh
 # Remove the Alertmanager service address
 docker service update --env-rm PROMETHEUS_SCRAPE_INTERVAL promstack_prometheus
 ```
+
 #### Environment variables
 
 - `PROMETHEUS_SCRAPE_INTERVAL`: The scrape interval for Prometheus, default is `10s`
